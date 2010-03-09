@@ -19,9 +19,29 @@
       case 'save':
         $configuration_value = tep_db_prepare_input($HTTP_POST_VARS['configuration_value']);
         $cID = tep_db_prepare_input($HTTP_GET_VARS['cID']);
-
+        
         tep_db_query("update " . TABLE_CONFIGURATION . " set configuration_value = '" . tep_db_input($configuration_value) . "', last_modified = now() where configuration_id = '" . (int)$cID . "'");
 
+        if ($HTTP_POST_VARS['cfg_cache'] == 'true') {
+           
+         $cache_file = DIR_FS_CACHE . '/cfg_parameters.cache';
+          if (file_exists($cache_file)) {
+           $config_params = unserialize(join('', file($cache_file)));
+          }else{
+           $config_params = array();
+          }
+          
+          $cfg_query = tep_db_query("select configuration_key, configuration_value from " . TABLE_CONFIGURATION . " where configuration_id = '" . (int)$cID . "'");
+          $cfg_data = tep_db_fetch_array($cfg_query);           
+          $config_params[$cfg_data['configuration_key']] = $cfg_data['configuration_value'];
+           
+          $serialized = serialize($config_params);
+           if ($f = @fopen($cache_file, 'w')) {
+               fwrite ($f, $serialized, strlen($serialized));
+               fclose($f);
+           }
+         }
+ 
         tep_redirect(tep_href_link(FILENAME_CONFIGURATION, 'gID=' . $HTTP_GET_VARS['gID'] . '&cID=' . $cID));
         break;
     }

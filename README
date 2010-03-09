@@ -1,0 +1,70 @@
+Database Error Mode (DEM) functionality for osCommerce 2.Xx
+------------------------------------------------------------
+
+By default all database errors on osCommerce are passed through the tep_db_error() function.
+The default behaviour of this function has some serious drawbacks:
+
+	* The errors will display the full MySQL error data, potentially exposing sensitive information
+	* The errors are very unfriendly from a commercial point of view 
+	* There is no error logging logic (other than optional logging ALL database actions to a file)
+	* There is no warning mechanism, errors can get unnoticed (unless you enable logging AND scan the log)
+	* Unnoticed errors get indexed by search engines (Google dork: [TEP STOP])
+
+The DEM functionality attempts to provide a solution to these problems, 
+while giving the store owner some additional options and freedom.
+
+
+What can it do?
+---------------
+The DEM allows you to customize the way database errors are handled by osCommerce.
+The feature set contains the following:
+
+	* All settings are controlled through the Administration tool
+	
+	* Functionality is completely database (duh!) and osCommerce independent 
+	
+	* Three possible database error modes:
+	
+		1. Friendly with silent reporting (by email)
+		2. Friendly (no reporting)
+		3. Debug (show debug information)
+  
+    * Email limit, e-mails for the same error only get send at specific intervals 
+      (prevent e-mail flooding on crowded websites with database error(s))
+      
+    * Auto Debug mode for certain IP addresses on live sites
+      (visitors see 'friendly mode', the tech department sees 'debug mode')
+      
+	* Return a 503 'Temporarily unavailable' HTTP header if possible 
+	  (Prevent search engines from indexing pages with database errors)
+	  
+	* Debug information includes basic backtrace 
+	  (Shows which route was travelled by PHP before the error)
+
+	
+How does it work?
+-----------------
+The datase independancy is achieved by caching the DEM settings from the Administration tool in the /includes/work directory.
+If no cache file is present the DEM will automatically default to 'Friendly' mode (hence it's existence).
+If there is a cache file present it will be used to determine the e-mail threshhold for errors. 
+All error logic on the catalog side is handled in a single file (includes/database_error.php). 
+This file can be altered to be more friendly and/or in sync with the store it is deployed on.
+It also features some pointers to the pittfalls that are present upon editing.
+
+It's worth noting the 'configuration-setting-to-cache-file' functionality can be deployed by any configuration-setting.
+This means the same idea could be re-used for other functionality that needs database independancy or to add more
+configuration parameters to the DEM functionality.
+
+
+History
+-------
+The Database Error Manager is based upon my original idea as posted on the osCommerce.com forum in 2003.
+(See: http://forums.oscommerce.com/topic/35083-tip-enhancement-to-tep-db-error/ for details)
+The biggest drawback of that original idea was the enormous flood of e-mail it could spawn on busy sites.
+Furthermore it did not cater for non-technical store owners, nor did it differentiate between visitors and
+developers who most likely would want to see what is happening real-time. And, as pointed out in that thread, 
+it used tep_db_mail() to send e-mails, which might actually not be available in scope at that moment.
+
+
+
+(c) 2010 - Matthijs van der Vegte

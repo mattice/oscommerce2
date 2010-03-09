@@ -740,7 +740,8 @@
 
 ////
 // Alias function for Store configuration values in the Administration Tool
-  function tep_cfg_select_option($select_array, $key_value, $key = '') {
+  function tep_cfg_select_option($select_array, $key_value, $key = '', $cfg_cache = false) {
+  	
     $string = '';
 
     for ($i=0, $n=sizeof($select_array); $i<$n; $i++) {
@@ -753,7 +754,19 @@
       $string .= '> ' . $select_array[$i];
     }
 
+    if ($cfg_cache === true) {
+      $string .= tep_draw_hidden_field('cfg_cache', 'true');
+    }
+    
     return $string;
+  }
+
+// Alias to allow filebased caching of configuration parameters
+  function tep_cfg_cache($key_value) {
+  	$string = tep_draw_input_field('configuration_value', $key_value) .
+  	          tep_draw_hidden_field('cfg_cache', 'true');
+  
+  	return $string;
   }
 
 ////
@@ -1356,4 +1369,5 @@
 
     return $ip_address;
   }
+  
 ?>

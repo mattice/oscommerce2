@@ -14,12 +14,12 @@
     global $$link;
 
     if (USE_PCONNECT == 'true') {
-      $$link = mysql_pconnect($server, $username, $password);
+      $$link = @mysql_connect($server, $username, $password) or tep_db_error('mysql_pconnect', mysql_errno(), mysql_error());
     } else {
-      $$link = mysql_connect($server, $username, $password);
+      $$link = @mysql_connect($server, $username, $password) or tep_db_error('mysql_connect' . $server, mysql_errno(), mysql_error());
     }
 
-    if ($$link) mysql_select_db($database);
+    if ($$link) @mysql_select_db($database) or tep_db_error('mysql_select_db ' . $database, mysql_errno(), mysql_error());
 
     return $$link;
   }
@@ -31,7 +31,8 @@
   }
 
   function tep_db_error($query, $errno, $error) { 
-    die('<font color="#000000"><b>' . $errno . ' - ' . $error . '<br><br>' . $query . '<br><br><small><font color="#ff0000">[TEP STOP]</font></small><br><br></b></font>');
+    include('includes/database_error.php');
+    exit;
   }
 
   function tep_db_query($query, $link = 'db_link') {

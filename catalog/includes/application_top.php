@@ -64,7 +64,7 @@
   require(DIR_WS_FUNCTIONS . 'database.php');
 
 // make a connection to the database... now
-  tep_db_connect() or die('Unable to connect to database server!');
+  tep_db_connect();
 
 // set the application parameters
   $configuration_query = tep_db_query('select configuration_key as cfgKey, configuration_value as cfgValue from ' . TABLE_CONFIGURATION);
@@ -143,6 +143,8 @@
     ini_set('session.cookie_path', $cookie_path);
     ini_set('session.cookie_domain', $cookie_domain);
   }
+
+  @ini_set('session.use_only_cookies', (SESSION_FORCE_COOKIE_USE == 'True') ? 1 : 0);
 
 // set the session ID if it exists
    if (isset($HTTP_POST_VARS[tep_session_name()])) {

@@ -14,6 +14,7 @@
 
   $htaccess_array = null;
   $htpasswd_array = null;
+  $is_iis = stripos($HTTP_SERVER_VARS['SERVER_SOFTWARE'], 'iis');
 
   $authuserfile_array = array('##### OSCOMMERCE ADMIN PROTECTION - BEGIN #####',
                               'AuthType Basic',
@@ -22,7 +23,7 @@
                               'Require valid-user',
                               '##### OSCOMMERCE ADMIN PROTECTION - END #####');
 
-  if (file_exists(DIR_FS_ADMIN . '.htpasswd_oscommerce') && is_writable(DIR_FS_ADMIN . '.htpasswd_oscommerce') && file_exists(DIR_FS_ADMIN . '.htaccess') && is_writable(DIR_FS_ADMIN . '.htaccess')) {
+  if (!$is_iis && file_exists(DIR_FS_ADMIN . '.htpasswd_oscommerce') && tep_is_writable(DIR_FS_ADMIN . '.htpasswd_oscommerce') && file_exists(DIR_FS_ADMIN . '.htaccess') && tep_is_writable(DIR_FS_ADMIN . '.htaccess')) {
     $htaccess_array = array();
     $htpasswd_array = array();
 
@@ -225,7 +226,7 @@
     } else {
       $secMessageStack->add(HTPASSWD_SECURED, 'success');
     }
-  } else {
+  } else if (!$is_iis) {
     $secMessageStack->add(HTPASSWD_PERMISSIONS, 'error');
   }
 ?>
@@ -283,7 +284,12 @@
       $aInfo = new objectInfo($admins);
     }
 
+
     $htpasswd_secured = tep_image(DIR_WS_IMAGES . 'icon_status_red.gif', 'Not Secured', 10, 10);
+
+    if ($is_iis) {
+      $htpasswd_secured = 'N/A';
+    }
 
     if (is_array($htpasswd_array)) {
       for ($i=0, $n=sizeof($htpasswd_array); $i<$n; $i++) {
@@ -310,7 +316,7 @@
   }
 ?>
               <tr>
-                <td colspan="3" align="right"><?php echo '<a href="' . tep_href_link(FILENAME_ADMINISTRATORS, 'action=new') . '">' . tep_image_button('button_insert.gif', IMAGE_INSERT) . '</a>'; ?></td>
+                <td class="smallText" colspan="3" align="right"><?php echo tep_draw_button(IMAGE_INSERT, 'plus', tep_href_link(FILENAME_ADMINISTRATORS, 'action=new')); ?></td>
               </tr>
             </table></td>
 <?php
@@ -330,7 +336,7 @@
         $contents[] = array('text' => '<br>' . tep_draw_checkbox_field('htaccess', 'true') . ' ' . TEXT_INFO_PROTECT_WITH_HTPASSWD);
       }
 
-      $contents[] = array('align' => 'center', 'text' => '<br>' . tep_image_submit('button_save.gif', IMAGE_SAVE) . '&nbsp;<a href="' . tep_href_link(FILENAME_ADMINISTRATORS) . '">' . tep_image_button('button_cancel.gif', IMAGE_CANCEL) . '</a>');
+      $contents[] = array('align' => 'center', 'text' => '<br>' . tep_draw_button(IMAGE_SAVE, 'disk', null, 'primary') . tep_draw_button(IMAGE_CANCEL, 'close', tep_href_link(FILENAME_ADMINISTRATORS)));
       break;
     case 'edit':
       $heading[] = array('text' => '<b>' . $aInfo->user_name . '</b>');
@@ -355,7 +361,7 @@
         $contents[] = array('text' => '<br>' . tep_draw_checkbox_field('htaccess', 'true', $default_flag) . ' ' . TEXT_INFO_PROTECT_WITH_HTPASSWD);
       }
 
-      $contents[] = array('align' => 'center', 'text' => '<br>' . tep_image_submit('button_update.gif', IMAGE_UPDATE) . '&nbsp;<a href="' . tep_href_link(FILENAME_ADMINISTRATORS, 'aID=' . $aInfo->id) . '">' . tep_image_button('button_cancel.gif', IMAGE_CANCEL) . '</a>');
+      $contents[] = array('align' => 'center', 'text' => '<br>' . tep_draw_button(IMAGE_SAVE, 'disk', null, 'primary') . tep_draw_button(IMAGE_CANCEL, 'close', tep_href_link(FILENAME_ADMINISTRATORS, 'aID=' . $aInfo->id)));
       break;
     case 'delete':
       $heading[] = array('text' => '<b>' . $aInfo->user_name . '</b>');
@@ -363,13 +369,13 @@
       $contents = array('form' => tep_draw_form('administrator', FILENAME_ADMINISTRATORS, 'aID=' . $aInfo->id . '&action=deleteconfirm'));
       $contents[] = array('text' => TEXT_INFO_DELETE_INTRO);
       $contents[] = array('text' => '<br><b>' . $aInfo->user_name . '</b>');
-      $contents[] = array('align' => 'center', 'text' => '<br>' . tep_image_submit('button_delete.gif', IMAGE_UPDATE) . '&nbsp;<a href="' . tep_href_link(FILENAME_ADMINISTRATORS, 'aID=' . $aInfo->id) . '">' . tep_image_button('button_cancel.gif', IMAGE_CANCEL) . '</a>');
+      $contents[] = array('align' => 'center', 'text' => '<br>' . tep_draw_button(IMAGE_DELETE, 'trash', null, 'primary') . tep_draw_button(IMAGE_CANCEL, 'close', tep_href_link(FILENAME_ADMINISTRATORS, 'aID=' . $aInfo->id)));
       break;
     default:
       if (isset($aInfo) && is_object($aInfo)) {
         $heading[] = array('text' => '<b>' . $aInfo->user_name . '</b>');
 
-        $contents[] = array('align' => 'center', 'text' => '<a href="' . tep_href_link(FILENAME_ADMINISTRATORS, 'aID=' . $aInfo->id . '&action=edit') . '">' . tep_image_button('button_edit.gif', IMAGE_EDIT) . '</a> <a href="' . tep_href_link(FILENAME_ADMINISTRATORS, 'aID=' . $aInfo->id . '&action=delete') . '">' . tep_image_button('button_delete.gif', IMAGE_DELETE) . '</a>');
+        $contents[] = array('align' => 'center', 'text' => tep_draw_button(IMAGE_EDIT, 'document', tep_href_link(FILENAME_ADMINISTRATORS, 'aID=' . $aInfo->id . '&action=edit')) . tep_draw_button(IMAGE_DELETE, 'trash', tep_href_link(FILENAME_ADMINISTRATORS, 'aID=' . $aInfo->id . '&action=delete')));
       }
       break;
   }

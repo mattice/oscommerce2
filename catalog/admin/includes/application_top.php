@@ -28,13 +28,13 @@
   require('includes/configure.php');
 
 // Define the project version --- obsolete, now retrieved with tep_get_version()
-  define('PROJECT_VERSION', 'osCommerce Online Merchant v2.2');
+  define('PROJECT_VERSION', 'osCommerce Online Merchant v2.3');
 
 // some code to solve compatibility issues
   require(DIR_WS_FUNCTIONS . 'compatibility.php');
 
 // set php_self in the local scope
-  $PHP_SELF = (isset($HTTP_SERVER_VARS['PHP_SELF']) ? $HTTP_SERVER_VARS['PHP_SELF'] : $HTTP_SERVER_VARS['SCRIPT_NAME']);
+  $PHP_SELF = (((strlen(ini_get('cgi.fix_pathinfo')) > 0) && ((bool)ini_get('cgi.fix_pathinfo') == false)) || !isset($HTTP_SERVER_VARS['SCRIPT_NAME'])) ? basename($HTTP_SERVER_VARS['PHP_SELF']) : basename($HTTP_SERVER_VARS['SCRIPT_NAME']);
 
 // Used in the "Backup Manager" to compress backups
   define('LOCAL_EXE_GZIP', 'gzip');

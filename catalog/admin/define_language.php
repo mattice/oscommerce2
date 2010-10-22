@@ -24,7 +24,7 @@
         if (!in_array($filename, $exclude_array)) {
           $file = array('name' => $path . $filename,
                         'is_dir' => is_dir($path . $filename),
-                        'writable' => is_writable($path . $filename),
+                        'writable' => tep_is_writable($path . $filename),
                         'size' => filesize($path . $filename),
                         'last_modified' => strftime(DATE_TIME_FORMAT, filemtime($path . $filename)));
 
@@ -72,7 +72,7 @@
         if (isset($HTTP_GET_VARS['lngdir']) && isset($HTTP_GET_VARS['filename'])) {
           $file = DIR_FS_CATALOG_LANGUAGES . $HTTP_GET_VARS['filename'];
 
-          if (file_exists($file) && is_writable($file)) {
+          if (file_exists($file) && tep_is_writable($file)) {
             $new_file = fopen($file, 'w');
             $file_contents = stripslashes($HTTP_POST_VARS['file_contents']);
             fwrite($new_file, $file_contents, strlen($file_contents));
@@ -128,7 +128,7 @@
       $contents = implode('', $file_array);
 
       $file_writeable = true;
-      if (!is_writable($file)) {
+      if (!tep_is_writable($file)) {
         $file_writeable = false;
         $messageStack->reset();
         $messageStack->add(sprintf(ERROR_FILE_NOT_WRITEABLE, $file), 'error');
@@ -148,7 +148,7 @@
                 <td><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
               </tr>
               <tr>
-                <td align="right"><?php if ($file_writeable == true) { echo tep_image_submit('button_save.gif', IMAGE_SAVE) . '&nbsp;<a href="' . tep_href_link(FILENAME_DEFINE_LANGUAGE, 'lngdir=' . $HTTP_GET_VARS['lngdir']) . '">' . tep_image_button('button_cancel.gif', IMAGE_CANCEL) . '</a>'; } else { echo '<a href="' . tep_href_link(FILENAME_DEFINE_LANGUAGE, 'lngdir=' . $HTTP_GET_VARS['lngdir']) . '">' . tep_image_button('button_back.gif', IMAGE_BACK) . '</a>'; } ?></td>
+                <td class="smallText" align="right"><?php if ($file_writeable == true) { echo tep_draw_button(IMAGE_SAVE, 'disk', null, 'primary') . tep_draw_button(IMAGE_CANCEL, 'close', tep_href_link(FILENAME_DEFINE_LANGUAGE, 'lngdir=' . $HTTP_GET_VARS['lngdir'])); } else { echo tep_draw_button(IMAGE_BACK, 'arrow-1-w', tep_href_link(FILENAME_DEFINE_LANGUAGE, 'lngdir=' . $HTTP_GET_VARS['lngdir'])); } ?></td>
               </tr>
             </table></td>
           </form></tr>
@@ -168,7 +168,7 @@
             <td><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
           </tr>
           <tr>
-            <td><?php echo '<a href="' . tep_href_link(FILENAME_DEFINE_LANGUAGE, 'lngdir=' . $HTTP_GET_VARS['lngdir']) . '">' . tep_image_button('button_back.gif', IMAGE_BACK) . '</a>'; ?></td>
+            <td><?php echo tep_draw_button(IMAGE_BACK, 'arrow-1-w', tep_href_link(FILENAME_DEFINE_LANGUAGE, 'lngdir=' . $HTTP_GET_VARS['lngdir'])); ?></td>
           </tr>
 <?php
     }
@@ -185,7 +185,7 @@
               </tr>
               <tr class="dataTableRow" onmouseover="rowOverEffect(this)" onmouseout="rowOutEffect(this)">
                 <td class="dataTableContent"><a href="<?php echo tep_href_link(FILENAME_DEFINE_LANGUAGE, 'lngdir=' . $HTTP_GET_VARS['lngdir'] . '&filename=' . $filename); ?>"><b><?php echo $filename; ?></b></a></td>
-                <td class="dataTableContent" align="center"><?php echo tep_image(DIR_WS_IMAGES . 'icons/' . ((is_writable(DIR_FS_CATALOG_LANGUAGES . $filename) == true) ? 'tick.gif' : 'cross.gif')); ?></td>
+                <td class="dataTableContent" align="center"><?php echo tep_image(DIR_WS_IMAGES . 'icons/' . ((tep_is_writable(DIR_FS_CATALOG_LANGUAGES . $filename) == true) ? 'tick.gif' : 'cross.gif')); ?></td>
                 <td class="dataTableContent" align="right"><?php echo strftime(DATE_TIME_FORMAT, filemtime(DIR_FS_CATALOG_LANGUAGES . $filename)); ?></td>
               </tr>
 <?php

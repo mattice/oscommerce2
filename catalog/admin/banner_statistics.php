@@ -20,7 +20,7 @@
   $dir_ok = false;
   if (function_exists('imagecreate') && tep_not_null($banner_extension)) {
     if (is_dir(DIR_WS_IMAGES . 'graphs')) {
-      if (is_writeable(DIR_WS_IMAGES . 'graphs')) {
+      if (tep_is_writable(DIR_WS_IMAGES . 'graphs')) {
         $dir_ok = true;
       } else {
         $messageStack->add(ERROR_GRAPHS_DIRECTORY_NOT_WRITEABLE, 'error');
@@ -162,7 +162,7 @@
         <td><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
       </tr>
       <tr>
-        <td class="main" align="right"><?php echo '<a href="' . tep_href_link(FILENAME_BANNER_MANAGER, 'page=' . $HTTP_GET_VARS['page'] . '&bID=' . $HTTP_GET_VARS['bID']) . '">' . tep_image_button('button_back.gif', IMAGE_BACK) . '</a>'; ?></td>
+        <td class="smallText" align="right"><?php echo tep_draw_button(IMAGE_BACK, 'arrow-1-w', tep_href_link(FILENAME_BANNER_MANAGER, 'page=' . $HTTP_GET_VARS['page'] . '&bID=' . $HTTP_GET_VARS['bID'])); ?></td>
       </tr>
     </table></td>
 <!-- body_text_eof //-->

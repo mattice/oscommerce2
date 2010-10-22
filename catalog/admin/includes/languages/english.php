@@ -61,6 +61,7 @@ define('BOX_CONFIGURATION_MYSTORE', 'My Store');
 define('BOX_CONFIGURATION_LOGGING', 'Logging');
 define('BOX_CONFIGURATION_CACHE', 'Cache');
 define('BOX_CONFIGURATION_ADMINISTRATORS', 'Administrators');
+define('BOX_CONFIGURATION_STORE_LOGO', 'Store Logo');
 
 // modules box text in includes/boxes/modules.php
 define('BOX_HEADING_MODULES', 'Modules');
@@ -68,6 +69,9 @@ define('BOX_MODULES_PAYMENT', 'Payment');
 define('BOX_MODULES_SHIPPING', 'Shipping');
 define('BOX_MODULES_ORDER_TOTAL', 'Order Total');
 define('BOX_MODULES_ACTION_RECORDER', 'Action Recorder');
+define('BOX_MODULES_HEADER_TAGS', 'Header Tags');
+define('BOX_MODULES_SOCIAL_BOOKMARKS', 'Social Bookmarks');
+define('BOX_MODULES_ADMIN_DASHBOARD', 'Admin Dashboard');
 
 // categories box text in includes/boxes/catalog.php
 define('BOX_HEADING_CATALOG', 'Catalog');
@@ -199,6 +203,7 @@ define('IMAGE_DETAILS', 'Details');
 define('IMAGE_DELETE', 'Delete');
 define('IMAGE_EDIT', 'Edit');
 define('IMAGE_EMAIL', 'Email');
+define('IMAGE_EXPORT', 'Export');
 define('IMAGE_ICON_STATUS_GREEN', 'Active');
 define('IMAGE_ICON_STATUS_GREEN_LIGHT', 'Set Active');
 define('IMAGE_ICON_STATUS_RED', 'Inactive');

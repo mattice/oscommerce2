@@ -5,11 +5,15 @@
   osCommerce, Open Source E-Commerce Solutions
   http://www.oscommerce.com
 
-  Copyright (c) 2003 osCommerce
+  Copyright (c) 2010 osCommerce
 
   Released under the GNU General Public License
 */
+?>
 
+<div id="columnRight" class="grid_4">
+
+<?php
   require(DIR_WS_BOXES . 'shopping_cart.php');
 
   if (isset($HTTP_GET_VARS['products_id'])) include(DIR_WS_BOXES . 'manufacturer_info.php');
@@ -33,7 +37,7 @@
   }
 
   if (isset($HTTP_GET_VARS['products_id'])) {
-    if (basename($PHP_SELF) != FILENAME_TELL_A_FRIEND) include(DIR_WS_BOXES . 'tell_a_friend.php');
+    include(DIR_WS_BOXES . 'product_social_bookmarks.php');
   } else {
     include(DIR_WS_BOXES . 'specials.php');
   }
@@ -45,3 +49,5 @@
     include(DIR_WS_BOXES . 'currencies.php');
   }
 ?>
+
+</div>

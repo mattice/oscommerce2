@@ -108,7 +108,7 @@
 // Return a product's special price (returns nothing if there is no offer)
 // TABLES: products
   function tep_get_products_special_price($product_id) {
-    $product_query = tep_db_query("select specials_new_products_price from " . TABLE_SPECIALS . " where products_id = '" . (int)$product_id . "' and status");
+    $product_query = tep_db_query("select specials_new_products_price from " . TABLE_SPECIALS . " where products_id = '" . (int)$product_id . "' and status = 1");
     $product = tep_db_fetch_array($product_query);
 
     return $product['specials_new_products_price'];
@@ -1036,7 +1036,7 @@
     if (SEND_EMAILS != 'true') return false;
 
     // Instantiate a new mail object
-    $message = new email(array('X-Mailer: osCommerce Mailer'));
+    $message = new email(array('X-Mailer: osCommerce'));
 
     // Build the text version
     $text = strip_tags($email_text);

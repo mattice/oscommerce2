@@ -34,7 +34,7 @@
   }
 
 // define the project version --- obsolete, now retrieved with tep_get_version()
-  define('PROJECT_VERSION', 'osCommerce Online Merchant v2.2');
+  define('PROJECT_VERSION', 'osCommerce Online Merchant v2.3');
 
 // some code to solve compatibility issues
   require(DIR_WS_FUNCTIONS . 'compatibility.php');
@@ -43,7 +43,7 @@
   $request_type = (getenv('HTTPS') == 'on') ? 'SSL' : 'NONSSL';
 
 // set php_self in the local scope
-  if (!isset($PHP_SELF)) $PHP_SELF = $HTTP_SERVER_VARS['PHP_SELF'];
+  $PHP_SELF = (((strlen(ini_get('cgi.fix_pathinfo')) > 0) && ((bool)ini_get('cgi.fix_pathinfo') == false)) || !isset($HTTP_SERVER_VARS['SCRIPT_NAME'])) ? basename($HTTP_SERVER_VARS['PHP_SELF']) : basename($HTTP_SERVER_VARS['SCRIPT_NAME']);
 
   if ($request_type == 'NONSSL') {
     define('DIR_WS_CATALOG', DIR_WS_HTTP_CATALOG);
@@ -334,6 +334,12 @@
       // customer adds a product from the products page
       case 'add_product' :    if (isset($HTTP_POST_VARS['products_id']) && is_numeric($HTTP_POST_VARS['products_id'])) {
                                 $cart->add_cart($HTTP_POST_VARS['products_id'], $cart->get_quantity(tep_get_uprid($HTTP_POST_VARS['products_id'], $HTTP_POST_VARS['id']))+1, $HTTP_POST_VARS['id']);
+                              }
+                              tep_redirect(tep_href_link($goto, tep_get_all_get_params($parameters)));
+                              break;
+      // customer removes a product from their shopping cart
+      case 'remove_product' : if (isset($HTTP_GET_VARS['products_id'])) {
+                                $cart->remove($HTTP_GET_VARS['products_id']);
                               }
                               tep_redirect(tep_href_link($goto, tep_get_all_get_params($parameters)));
                               break;

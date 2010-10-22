@@ -42,6 +42,11 @@
             $check = tep_db_fetch_array($check_query);
 
             if (tep_validate_password($password, $check['user_password'])) {
+// migrate old hashed password to new phpass password
+              if (tep_password_type($check['user_password']) != 'phpass') {
+                tep_db_query("update " . TABLE_ADMINISTRATORS . " set user_password = '" . tep_encrypt_password($password) . "' where id = '" . (int)$check['id'] . "'");
+              }
+
               tep_session_register('admin');
 
               $admin = array('id' => $check['id'],
@@ -96,7 +101,7 @@
           $username = tep_db_prepare_input($HTTP_POST_VARS['username']);
           $password = tep_db_prepare_input($HTTP_POST_VARS['password']);
 
-          tep_db_query('insert into ' . TABLE_ADMINISTRATORS . ' (user_name, user_password) values ("' . $username . '", "' . tep_encrypt_password($password) . '")');
+          tep_db_query("insert into " . TABLE_ADMINISTRATORS . " (user_name, user_password) values ('" . tep_db_input($username) . "', '" . tep_db_input(tep_encrypt_password($password)) . "')");
         }
 
         tep_redirect(tep_href_link(FILENAME_LOGIN));
@@ -168,7 +173,7 @@
     $contents = array('form' => tep_draw_form('login', FILENAME_LOGIN, 'action=process'));
     $contents[] = array('text' => TEXT_USERNAME . '<br>' . tep_draw_input_field('username'));
     $contents[] = array('text' => '<br>' . TEXT_PASSWORD . '<br>' . tep_draw_password_field('password'));
-    $contents[] = array('align' => 'center', 'text' => '<br><input type="submit" value="' . BUTTON_LOGIN . '" />');
+    $contents[] = array('align' => 'center', 'text' => '<br>' . tep_draw_button(BUTTON_LOGIN, 'key'));
   } else {
     $heading[] = array('text' => '<b>' . HEADING_TITLE . '</b>');
 
@@ -176,7 +181,7 @@
     $contents[] = array('text' => TEXT_CREATE_FIRST_ADMINISTRATOR);
     $contents[] = array('text' => '<br>' . TEXT_USERNAME . '<br>' . tep_draw_input_field('username'));
     $contents[] = array('text' => '<br>' . TEXT_PASSWORD . '<br>' . tep_draw_password_field('password'));
-    $contents[] = array('align' => 'center', 'text' => '<br><input type="submit" value="' . BUTTON_CREATE_ADMINISTRATOR . '" />');
+    $contents[] = array('align' => 'center', 'text' => '<br>' . tep_draw_button(BUTTON_CREATE_ADMINISTRATOR, 'key'));
   }
 
   $box = new box;
